@@ -29,7 +29,7 @@ export default class cartManager {
     if (cartIndex >= 0) {
       // Verifica si el producto existe en el ProductManager
       try {
-        await PM.getProductByID(productId);
+        await PM.getProductByID(Number(productId))
   
         const productIndex = this.listOfCarts[cartIndex].products.findIndex((element) => element.product == productId);
         if (productIndex >= 0) {
