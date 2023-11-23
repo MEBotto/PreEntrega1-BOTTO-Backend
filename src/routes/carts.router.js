@@ -5,11 +5,11 @@ const router = Router();
 
 const CM = new cartManager("./src/data/carritos.json")
 
-CM.init()
+await CM.init()
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    CM.addCart()
+    await CM.addCart()
     res.json({
       status: "Carrito creado correctamente"
     })
@@ -42,10 +42,10 @@ router.get("/:cid", (req, res) => {
   }
 });
 
-router.post("/:cid/product/:pid", (req, res) => {
+router.post("/:cid/product/:pid", async (req, res) => {
   const { cid, pid } = req.params
   try {
-    CM.addProductCart(cid, pid)
+    await CM.addProductCart(cid, pid)
     res.json({
       status: "Se añadió el producto al carrito"
     });

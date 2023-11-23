@@ -5,7 +5,7 @@ const router = Router()
 
 const PM = new ProductManager("./src/data/productos.json")
 
-PM.init()
+await PM.init()
 
 router.get("/", (request, response) => {
   const { limit } = request.query
@@ -32,7 +32,7 @@ router.get("/:id", (request, response) => {
   }
 })
 
-router.post("/", (request, response) => {
+router.post("/", async (request, response) => {
   const { title, description, price, thumbnail, code, stock, category } = request.body
 
   const product = ({
@@ -47,7 +47,7 @@ router.post("/", (request, response) => {
   })
 
   try{
-    PM.addProduct(product)
+    await PM.addProduct(product)
     response.json({
       status: "Producto agregado correctamente"
     })
@@ -56,7 +56,7 @@ router.post("/", (request, response) => {
   }
 })
 
-router.put("/:id", (request, response) => {
+router.put("/:id", async (request, response) => {
   const { id } = request.params
 
   try{
@@ -71,7 +71,7 @@ router.put("/:id", (request, response) => {
       stock: Number(stock),
     })
 
-    PM.updateProduct(Number(id), product)
+    await PM.updateProduct(Number(id), product)
 
     response.json({
       status: "Producto actualizado correctamente"
@@ -81,16 +81,16 @@ router.put("/:id", (request, response) => {
   }
 })
 
-router.delete("/:id", (request, response) => {
+router.delete("/:id", async (request, response) => {
   const { id } = request.params
 
   try {
-    PM.deleteProduct(Number(id))
+    await PM.deleteProduct(Number(id))
     response.json({
       status: "Producto eliminado correctamente"
     })
   }catch(error){
-    res.status(400).json({error: error.message});
+    response.status(400).json({error: error.message});
   }
 })
 
