@@ -24,18 +24,25 @@ export default class cartManager {
   }
 
   async addProductCart(cartId, productId) {
-    const index = this.listOfCarts.findIndex((element) => element.id == cartId);
-    if (index >= 0){
-      if (this.listOfCarts[index].products.find((element) => element.product == productId)) {
-        this.listOfCarts[index].products[this.listOfCarts[index].products.findIndex((element) => element.product == productId)].quantity += 1;
+    // Verifica si el carrito existe
+    const cartIndex = this.listOfCarts.findIndex((element) => element.id == cartId);
+    if (cartIndex >= 0) {
+      // Verifica si el producto existe en el ProductManager
+      try {
+        await PM.getProductByID(productId);
+  
+        const productIndex = this.listOfCarts[cartIndex].products.findIndex((element) => element.product == productId);
+        if (productIndex >= 0) {
+          this.listOfCarts[cartIndex].products[productIndex].quantity += 1;
+        } else {
+          this.listOfCarts[cartIndex].products.push({ "product": productId, "quantity": 1 });
+        }
+        await this.saveToFile();
+      } catch (error) {
+        throw new Error("Error al agregar producto al carrito: " + error.message);
       }
-      else {
-        this.listOfCarts[index].products.push({"product": productId, "quantity": 1});
-      }
-      await this.saveToFile()
-    }
-    else {
-      throw new Error("Carrito no encontrado con ese ID")
+    } else {
+      throw new Error("Carrito no encontrado con ese ID");
     }
   }
 
